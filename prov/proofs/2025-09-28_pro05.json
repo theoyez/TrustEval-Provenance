@@ -1,0 +1,17 @@
+{
+  "run_id": "2025-09-28_pro05",
+  "merkle_root": "a1cb7ef67fcdbe8a598a2646155dc4d2d7e14828da15145563cc18f045351e61",
+  "leaves": [
+    {
+      "doc": "PAPER:vaswani2017",
+      "chunk": 15,
+      "hash": "3799ef53ea225ece5ed62ea577b2521d1820f3e935ad31bff2694a60cf65ad8f"
+    },
+    {
+      "doc": "CARD:llama31",
+      "chunk": 11,
+      "hash": "8958285fe681464f55ab8c164d8a42fed99747eef1afab15261c7bad0a98377d"
+    }
+  ],
+  "signature": "7302037486cb0c9c368b7f53abec30ee"
+}

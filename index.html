@@ -1,0 +1,48 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TrustEval Pro</title><link rel="stylesheet" href="config/theme.css"><style>
+body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0}
+header{background:var(--panel);border-bottom:1px solid var(--muted);padding:14px 16px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.btn{display:inline-block;padding:8px 12px;border:1px solid var(--muted);border-radius:10px;background:#141617;color:var(--ink);text-decoration:none}
+.container{max-width:1100px;margin:0 auto;padding:0 16px}
+.small{color:var(--ink-dim);font-size:12px}
+h1{font-size:28px;margin:14px 0 4px}.lead{color:var(--ink-dim);margin:0 0 12px}
+table{width:100%;border-collapse:collapse;margin:12px 0;background:var(--card);border:1px solid var(--muted);border-radius:12px;overflow:hidden}
+th,td{padding:12px;border-bottom:1px solid var(--muted);vertical-align:top}
+thead th{position:sticky;top:0;background:#141617;z-index:2}
+tr:hover{background:#16181a}
+.badge{display:inline-flex;gap:6px;padding:2px 8px;border-radius:999px;border:1px solid var(--muted);background:#131416;font-size:12px;white-space:nowrap}
+.ok{border-color:var(--ok);color:#d7ffe8}.warn{border-color:var(--warn);color:#fff3bf}.err{border-color:var(--err);color:#ffd7d7}
+.chev{cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.drawer{display:none;padding:10px;border:1px solid var(--muted);border-radius:10px;background:#121416;margin:8px 0}
+.right{text-align:right}
+.input{width:100%;padding:10px;border:1px solid var(--muted);border-radius:10px;margin:10px 0 16px;background:#121416;color:#fff}
+.meta-kv{display:grid;grid-template-columns:140px 1fr;gap:6px}
+.tip{position:relative;display:inline-flex;align-items:center;gap:6px}
+.tip .bubble{visibility:hidden;opacity:0;transition:opacity .15s ease;position:absolute;left:0;top:125%;background:#0f1112;border:1px solid var(--muted);padding:8px 10px;border-radius:8px;min-width:220px;max-width:340px;color:var(--ink-dim);font-size:12px;z-index:5}
+.tip:hover .bubble,.tip:focus-within .bubble{visibility:visible;opacity:1}
+.arrow{margin-left:6px;color:var(--ink-dim)}
+.kv{display:grid;grid-template-columns:120px 1fr;gap:6px}
+code{background:#0f1112;border:1px solid var(--muted);padding:1px 6px;border-radius:6px}
+.flex{display:flex;gap:10px;flex-wrap:wrap}
+</style>
+<script>
+const TOOLTIP={"accuracy":"Partial-credit match vs expected (exact / token overlap / edit).","grounding":"Citations must be allowed (Per-Item→Domain). If cited source isn’t in retrieved top-k, score is capped.","safety":"Regex packs for PII/Toxicity/Policy apply bounded deductions.","robustness":"Stability under paraphrase/perturbations; higher is more robust.","bias":"Gap across sensitive cohorts (lower gap → higher score).","calibration":"Does confidence align with correctness? Higher is better.","trust_score":"Blend includes provenance (see How it works).","provenance":"Signed run + Merkle root verification. Click ▸ Provenance to see details.","audit":"Retrieval candidates, citations, and consistency. Click ▸ Audit to expand."};
+</script></head><body>
+<header><a class="btn" href="https://theoyez.org" target="_blank">theoyez.org</a><nav><a class="btn" href="web/compare.html">Compare</a><a class="btn" href="web/how-it-works.html">How it works</a><a class="btn" href="README.md" target="_blank">README</a></nav></header>
+<div class="container">
+  <h1 id="heroTitle"></h1><p class="lead" id="heroDesc"></p>
+  <div class="small">Click a column header to sort. Hover a header for definitions. Use the ▸ buttons to expand meta, provenance, or audit.</div>
+  <input id="filter" class="input" placeholder="Filter by run id, model, or meta…">
+  <table role="table" aria-label="Leaderboard"><thead><tr id="thead"></tr></thead><tbody></tbody></table>
+  <p class="small">Updated: <span id="lastUpdated">—</span></p>
+</div>
+<script>
+let runs=[], sortKey=null, sortAsc=true, filterTerm=""; const pct=x=>(x*100).toFixed(1)+'%';
+function thWithTip(key,label,sortable=true){const help=(TOOLTIP&&TOOLTIP[key])||''; const id='th-'+key; const sortCls=sortable?'sortable':''; return `<th id="${id}" class="${sortCls}"><div class="tip" tabindex="0">${label} <span class="arrow">↕</span><div class="bubble">${help}</div></div></th>`;}
+function setSort(id,asc){document.querySelectorAll('.sortable').forEach(th=>{th.setAttribute('aria-sort','none'); const a=th.querySelector('.arrow'); if(a) a.textContent='↕';}); const th=document.getElementById(id); if(!th) return; th.setAttribute('aria-sort',asc?'ascending':'descending'); const a=th.querySelector('.arrow'); if(a) a.textContent=asc?'▲':'▼';}
+function metaBlock(m){if(!m) return '<div class=small>—</div>'; const keys=['model','dataset','prompt_cfg','retriever','date','prov','sig']; return '<div class="meta-kv">'+keys.filter(k=>m[k]).map(k=>`<div class=small><b>${k}</b></div><div class=small>${m[k]}</div>`).join('')+'</div>';}
+function provenanceBlock(p,meta,bundle){return `<div class="kv small"><div><b>status</b></div><div>${(p&&p.status)||'warn'}</div><div><b>root</b></div><div><code>${(p&&p.root)||'—'}</code></div><div><b>signature</b></div><div><code>${(meta&&meta.sig)||'—'}</code></div><div><b>bundle</b></div><div>${bundle?('<a href="'+bundle+'">download</a>'):'—'}</div></div>`;}
+function auditBlock(a){const items=(a?.trail||[]).map(t=>`<li class=small><code>${t.doc}</code> · chunk <b>${t.chunk}</b> · score ${t.score}</li>`).join(''); const cites=(a?.citations||[]).map(c=>`<li class=small><code>${c}</code></li>`).join(''); return `<div class="flex"><div><b>Retrieval candidates</b><ul>${items||'<li class=small>—</li>'}</ul></div><div><b>Citations used</b><ul>${cites||'<li class=small>—</li>'}</ul></div></div>`;}
+let cols=[]; function render(){const tbody=document.querySelector('tbody'); const rows=runs.filter(r=>{if(!filterTerm) return true; const hay=(r.run_id+' '+(r.model||'')+' '+Object.values(r.meta||{}).join(' ')).toLowerCase(); return hay.includes(filterTerm);}); tbody.innerHTML=rows.map(r=>{const status=r.audit?.status||'ok'; const badge='badge '+(status==='ok'?'ok':status==='warn'?'warn':'err'); const icon=(status==='ok'?'✓':status==='warn'?'!':'✖'); const prov=r.provenance||{status:'warn'}; const provBadge='badge '+(prov.status==='ok'?'ok':prov.status==='warn'?'warn':'err'); const provIcon=(prov.status==='ok'?'✓':prov.status==='warn'?'!':'✖'); const scoreCells=cols.map(k=>`<td class=right>${pct(r[k]||0)}</td>`).join(''); const metaBtn=`<div class="chev" data-target="meta_${r.run_id}">▸ ${r.model||'—'} · meta</div>`; const provBtn=`<div class="chev" data-target="prov_${r.run_id}">▸ Provenance</div>`; const auditBtn=`<div class="chev" data-target="audit_${r.run_id}">▸ Audit</div>`; return `<tr><td>${r.run_id}</td><td>${metaBtn}</td>${scoreCells}<td><span class="${provBadge}">${provIcon} ${(prov.status||'warn')}</span> ${provBtn}</td><td><span class="${badge}">${icon} ${status}</span> ${auditBtn}</td><td><a href="${r.report}">Report</a></td></tr><tr><td colspan="${cols.length+5}"><div id="meta_${r.run_id}" class="drawer">${metaBlock(r.meta)}</div><div id="prov_${r.run_id}" class="drawer">${provenanceBlock(r.provenance, r.meta, r.proofs ? r.proofs.bundle : null)}</div><div id="audit_${r.run_id}" class="drawer">${auditBlock(r.audit)}</div></td></tr>`;}).join(''); document.querySelectorAll('.chev').forEach(el=>{el.addEventListener('click',()=>{const id=el.dataset.target; const box=document.getElementById(id); const open=box.style.display!=='block'; box.style.display=open?'block':'none'; el.firstChild.textContent=open?'▾':'▸';});});}
+async function load(){const site=await fetch('config/site.json').then(r=>r.json()); const board=await fetch('leaderboard.json').then(r=>r.json()); runs=board.runs||[]; document.getElementById('lastUpdated').textContent=board.updated_at||'—'; document.getElementById('heroTitle').textContent=site.hero?.title||'TrustEval Pro'; document.getElementById('heroDesc').textContent=site.hero?.desc||''; const head=document.getElementById('thead'); const labels=site.labels||{}; cols=site.show_columns.filter(k=>!['run_id','model','trust_score'].includes(k)); head.innerHTML= thWithTip('run_id','Run',false)+thWithTip('model','Model')+cols.map(k=>thWithTip(k,labels[k]||k)).join('')+thWithTip('provenance','Provenance',false)+thWithTip('audit','Audit',false)+'<th>Report</th>'; document.querySelectorAll('.sortable').forEach(th=>{th.addEventListener('click',()=>{const key=th.id.replace('th-',''); sortAsc = sortKey===key ? !sortAsc : true; sortKey=key; runs.sort((a,b)=> (sortAsc?1:-1) * ( (b[key]||0)-(a[key]||0) )); setSort(th.id, sortAsc); render();});}); document.getElementById('filter').addEventListener('input',e=>{ filterTerm=(e.target.value||'').toLowerCase(); render(); }); sortKey='trust_score'; sortAsc=false; runs.sort((a,b)=>(b.trust_score-a.trust_score)); setSort('th-trust_score', false); render(); }
+window.addEventListener('DOMContentLoaded', load);
+</script></body></html>

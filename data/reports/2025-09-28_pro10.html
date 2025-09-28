@@ -1,0 +1,38 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../../config/theme.css">
+<style>
+body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0}
+.wrap{max-width:1100px;margin:0 auto;padding:16px}
+.topbar a{display:inline-block;border:1px solid var(--muted);padding:8px 12px;border-radius:10px;background:#141617;color:var(--ink);text-decoration:none;margin-right:8px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.card{border:1px solid var(--muted);border-radius:12px;background:var(--card);padding:16px}
+.tag{color:var(--ink-dim);font-size:12px;margin-bottom:6px}.val{font-size:22px}
+.section{border:1px solid var(--muted);border-radius:12px;background:var(--card);padding:12px;margin-top:16px}
+.chev{cursor:pointer;display:inline-block}.small{color:var(--ink-dim);font-size:12px}
+code{background:#0f1112;padding:2px 6px;border-radius:6px;border:1px solid var(--muted)}
+.bar{height:8px;background:#0f1112;border:1px solid var(--muted);border-radius:6px;overflow:hidden}
+.fill{height:100%;background:var(--bar)}
+table.proof{width:100%;border-collapse:collapse;margin-top:8px}
+table.proof th, table.proof td{border-bottom:1px solid var(--muted);padding:6px;text-align:left}
+</style></head><body>
+<div class='wrap'>
+  <div class='topbar'><a href='../../index.html'>← Leaderboard</a><a href='javascript:window.print()'>Export PDF</a></div>
+  <h2 style='margin:10px 0'>2025-09-28_pro10</h2>
+  <div class='grid'><div class='card'><div class='tag'>Accuracy</div><div class='val'>76.0%</div><div class='bar'><div class='fill' style='width:76.0%'></div></div></div><div class='card'><div class='tag'>Grounding</div><div class='val'>65.0%</div><div class='bar'><div class='fill' style='width:64.99999999999999%'></div></div></div><div class='card'><div class='tag'>Safety</div><div class='val'>95.0%</div><div class='bar'><div class='fill' style='width:95.0%'></div></div></div><div class='card'><div class='tag'>Robustness</div><div class='val'>70.0%</div><div class='bar'><div class='fill' style='width:70.0%'></div></div></div><div class='card'><div class='tag'>Bias</div><div class='val'>85.0%</div><div class='bar'><div class='fill' style='width:85.0%'></div></div></div><div class='card'><div class='tag'>Calibration</div><div class='val'>79.0%</div><div class='bar'><div class='fill' style='width:78.99999999999999%'></div></div></div><div class='card trust'><div class='tag'>Trust</div><div class='val'><b>73.9%</b></div><div class='bar'><div class='fill' style='width:73.91%'></div></div></div></div>
+  <div class='section'>
+    <div id='chev' class='chev'>▸ Audit trail, provenance & proofs</div>
+    <div id='box' style='display:none;margin-top:8px'>
+      <div class='grid'>
+        <div class='card'><div class='tag'>Retrieval candidates</div><ul class='small'><li><code>PAPER:vaswani2017</code> · chunk <b>20</b> · score 0.86</li><li><code>CARD:llama31</code> · chunk <b>9</b> · score 0.74</li></ul></div>
+        <div class='card'><div class='tag'>Citations used</div><ul class='small'><li><code>PAPER:vaswani2017</code></li><li><code>CARD:llama31</code></li></ul></div>
+        <div class='card'><div class='tag'>Provenance</div>
+          <div class='small'>root: <code>1cb2007b6bc29dbf8dbae78d46f07f673740e0a9b8564190ff7ae13563ad8cd0</code><br>sig: <code>cfc43666dd18ebc83223f85dd70bb98c</code><br>bundle: <a href='../../prov/bundles/2025-09-28_pro10.zip'>download</a></div>
+          <table class="proof"><thead><tr><th>Doc</th><th>Chunk</th><th>Leaf hash</th></tr></thead><tbody><tr><td><code>PAPER:vaswani2017</code></td><td>20</td><td><code>e85d1f786d7288c3131955fbd43a03c0dbebeb48f8e152565104ef0d6fd4a14d</code></td></tr><tr><td><code>CARD:llama31</code></td><td>9</td><td><code>d2f6b7958e595ff1ca6149ded72aecefea0b97c68e5aa1bbebbdf3d9c25b0143</code></td></tr></tbody></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>const c=document.getElementById('chev'),b=document.getElementById('box');c.addEventListener('click',()=>{const o=b.style.display!=='block';b.style.display=o?'block':'none';c.textContent=o?'▾ Audit trail, provenance & proofs':'▸ Audit trail, provenance & proofs';});</script>
+</div></body></html>
