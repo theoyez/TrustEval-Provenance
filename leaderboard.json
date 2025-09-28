@@ -1,0 +1,435 @@
+{
+  "updated_at": "2025-09-28 19:25 UTC",
+  "runs": [
+    {
+      "run_id": "2025-09-28_pro01",
+      "model": "model-1",
+      "report": "data/reports/2025-09-28_pro01.html",
+      "meta": {
+        "model": "demo1",
+        "dataset": "pro@1.0.0",
+        "prompt_cfg": "icl-8shot",
+        "retriever": "hybrid-v3",
+        "date": "2025-09-28"
+      },
+      "accuracy": 0.3134,
+      "grounding": 0.503,
+      "safety": 1.0,
+      "robustness": 0.731,
+      "bias": 0.8506,
+      "calibration": 0.7662,
+      "trust_score": 0.4389,
+      "audit": {
+        "status": "ok",
+        "trail": [
+          {
+            "doc": "PAPER:vaswani2017",
+            "chunk": 14,
+            "score": 0.73
+          },
+          {
+            "doc": "CARD:llama31",
+            "chunk": 14,
+            "score": 0.714
+          }
+        ],
+        "citations": [
+          "PAPER:vaswani2017",
+          "CARD:llama31"
+        ]
+      },
+      "provenance": {
+        "status": "ok",
+        "root": "9589e48c0ef7c3e2fd60dcfe2409ba34fbe726e1c1189b889c4ed611d4d661f5",
+        "bundle": "data/proofs/2025-09-28_pro01_bundle.zip"
+      }
+    },
+    {
+      "run_id": "2025-09-28_pro02",
+      "model": "model-2",
+      "report": "data/reports/2025-09-28_pro02.html",
+      "meta": {
+        "model": "demo2",
+        "dataset": "pro@1.0.0",
+        "prompt_cfg": "icl-8shot",
+        "retriever": "hybrid-v3",
+        "date": "2025-09-28"
+      },
+      "accuracy": 0.3152,
+      "grounding": 0.462,
+      "safety": 1.0,
+      "robustness": 0.7021,
+      "bias": 0.8885,
+      "calibration": 0.769,
+      "trust_score": 0.4277,
+      "audit": {
+        "status": "ok",
+        "trail": [
+          {
+            "doc": "PAPER:vaswani2017",
+            "chunk": 18,
+            "score": 0.737
+          },
+          {
+            "doc": "CARD:llama31",
+            "chunk": 29,
+            "score": 0.596
+          }
+        ],
+        "citations": [
+          "PAPER:vaswani2017",
+          "CARD:llama31"
+        ]
+      },
+      "provenance": {
+        "status": "ok",
+        "root": "04afea7175c4fa28d758d482c755082befd23aad6cde1bf659468ead0a305e79",
+        "bundle": "data/proofs/2025-09-28_pro02_bundle.zip"
+      }
+    },
+    {
+      "run_id": "2025-09-28_pro03",
+      "model": "model-3",
+      "report": "data/reports/2025-09-28_pro03.html",
+      "meta": {
+        "model": "demo3",
+        "dataset": "pro@1.0.0",
+        "prompt_cfg": "icl-8shot",
+        "retriever": "hybrid-v3",
+        "date": "2025-09-28"
+      },
+      "accuracy": 0.7784,
+      "grounding": 0.3422,
+      "safety": 1.0,
+      "robustness": 0.709,
+      "bias": 0.8102,
+      "calibration": 0.7791,
+      "trust_score": 0.6697,
+      "audit": {
+        "status": "ok",
+        "trail": [
+          {
+            "doc": "PAPER:vaswani2017",
+            "chunk": 21,
+            "score": 0.784
+          },
+          {
+            "doc": "CARD:llama31",
+            "chunk": 34,
+            "score": 0.612
+          }
+        ],
+        "citations": [
+          "PAPER:vaswani2017",
+          "CARD:llama31"
+        ]
+      },
+      "provenance": {
+        "status": "ok",
+        "root": "96cf25f02e93256637fac988523ce2a5f2c601fc8340746dcd52d7e2297652fb",
+        "bundle": "data/proofs/2025-09-28_pro03_bundle.zip"
+      }
+    },
+    {
+      "run_id": "2025-09-28_pro04",
+      "model": "model-4",
+      "report": "data/reports/2025-09-28_pro04.html",
+      "meta": {
+        "model": "demo4",
+        "dataset": "pro@1.0.0",
+        "prompt_cfg": "icl-8shot",
+        "retriever": "hybrid-v3",
+        "date": "2025-09-28"
+      },
+      "accuracy": 0.3259,
+      "grounding": 0.6027,
+      "safety": 1.0,
+      "robustness": 0.7265,
+      "bias": 0.8975,
+      "calibration": 0.7,
+      "trust_score": 0.4764,
+      "audit": {
+        "status": "ok",
+        "trail": [
+          {
+            "doc": "PAPER:vaswani2017",
+            "chunk": 36,
+            "score": 0.662
+          },
+          {
+            "doc": "CARD:llama31",
+            "chunk": 14,
+            "score": 0.565
+          }
+        ],
+        "citations": [
+          "PAPER:vaswani2017",
+          "CARD:llama31"
+        ]
+      },
+      "provenance": {
+        "status": "ok",
+        "root": "f4ea28f109109902dd3e72a1228fd38eb2831c205e900abedac00bb6d455f706",
+        "bundle": "data/proofs/2025-09-28_pro04_bundle.zip"
+      }
+    },
+    {
+      "run_id": "2025-09-28_pro05",
+      "model": "model-5",
+      "report": "data/reports/2025-09-28_pro05.html",
+      "meta": {
+        "model": "demo5",
+        "dataset": "pro@1.0.0",
+        "prompt_cfg": "icl-8shot",
+        "retriever": "hybrid-v3",
+        "date": "2025-09-28"
+      },
+      "accuracy": 0.585,
+      "grounding": 0.5756,
+      "safety": 1.0,
+      "robustness": 0.7101,
+      "bias": 0.893,
+      "calibration": 0.7494,
+      "trust_score": 0.6237,
+      "audit": {
+        "status": "warn",
+        "trail": [
+          {
+            "doc": "PAPER:vaswani2017",
+            "chunk": 26,
+            "score": 0.694
+          },
+          {
+            "doc": "CARD:llama31",
+            "chunk": 10,
+            "score": 0.555
+          }
+        ],
+        "citations": [
+          "PAPER:vaswani2017",
+          "CARD:llama31"
+        ]
+      },
+      "provenance": {
+        "status": "ok",
+        "root": "9cee5235dc544b0dca07acae3b0605df68f168b933756bb9453df5111c0f381f",
+        "bundle": "data/proofs/2025-09-28_pro05_bundle.zip"
+      }
+    },
+    {
+      "run_id": "2025-09-28_pro06",
+      "model": "model-6",
+      "report": "data/reports/2025-09-28_pro06.html",
+      "meta": {
+        "model": "demo6",
+        "dataset": "pro@1.0.0",
+        "prompt_cfg": "icl-8shot",
+        "retriever": "hybrid-v3",
+        "date": "2025-09-28"
+      },
+      "accuracy": 0.3941,
+      "grounding": 0.4819,
+      "safety": 1.0,
+      "robustness": 0.7268,
+      "bias": 0.8322,
+      "calibration": 0.7263,
+      "trust_score": 0.481,
+      "audit": {
+        "status": "ok",
+        "trail": [
+          {
+            "doc": "PAPER:vaswani2017",
+            "chunk": 17,
+            "score": 0.603
+          },
+          {
+            "doc": "CARD:llama31",
+            "chunk": 27,
+            "score": 0.56
+          }
+        ],
+        "citations": [
+          "PAPER:vaswani2017",
+          "CARD:llama31"
+        ]
+      },
+      "provenance": {
+        "status": "ok",
+        "root": "70316cc13e99d40a8804419fac4b0f4ee83e9ca84dadfc45f3ee93fdc0caa6bd",
+        "bundle": "data/proofs/2025-09-28_pro06_bundle.zip"
+      }
+    },
+    {
+      "run_id": "2025-09-28_pro07",
+      "model": "model-7",
+      "report": "data/reports/2025-09-28_pro07.html",
+      "meta": {
+        "model": "demo7",
+        "dataset": "pro@1.0.0",
+        "prompt_cfg": "icl-8shot",
+        "retriever": "hybrid-v3",
+        "date": "2025-09-28"
+      },
+      "accuracy": 0.5558,
+      "grounding": 0.3974,
+      "safety": 1.0,
+      "robustness": 0.6928,
+      "bias": 0.8421,
+      "calibration": 0.7608,
+      "trust_score": 0.5527,
+      "audit": {
+        "status": "warn",
+        "trail": [
+          {
+            "doc": "PAPER:vaswani2017",
+            "chunk": 17,
+            "score": 0.781
+          },
+          {
+            "doc": "CARD:llama31",
+            "chunk": 40,
+            "score": 0.715
+          }
+        ],
+        "citations": [
+          "PAPER:vaswani2017",
+          "CARD:llama31"
+        ]
+      },
+      "provenance": {
+        "status": "warn",
+        "root": "41878373ec7126eaa0c3e95bad9e92aaefe3e1a4b71cc7df62fc879f297c7e5e",
+        "bundle": "data/proofs/2025-09-28_pro07_bundle.zip"
+      }
+    },
+    {
+      "run_id": "2025-09-28_pro08",
+      "model": "model-1",
+      "report": "data/reports/2025-09-28_pro08.html",
+      "meta": {
+        "model": "demo1",
+        "dataset": "pro@1.0.0",
+        "prompt_cfg": "icl-8shot",
+        "retriever": "hybrid-v3",
+        "date": "2025-09-28"
+      },
+      "accuracy": 0.6648,
+      "grounding": 0.7292,
+      "safety": 1.0,
+      "robustness": 0.6127,
+      "bias": 0.8882,
+      "calibration": 0.7747,
+      "trust_score": 0.7176,
+      "audit": {
+        "status": "ok",
+        "trail": [
+          {
+            "doc": "PAPER:vaswani2017",
+            "chunk": 13,
+            "score": 0.798
+          },
+          {
+            "doc": "CARD:llama31",
+            "chunk": 21,
+            "score": 0.619
+          }
+        ],
+        "citations": [
+          "PAPER:vaswani2017",
+          "CARD:llama31"
+        ]
+      },
+      "provenance": {
+        "status": "ok",
+        "root": "712a47350d0128060752e5698a883746ea124e621cf836a097b493e0b620f640",
+        "bundle": "data/proofs/2025-09-28_pro08_bundle.zip"
+      }
+    },
+    {
+      "run_id": "2025-09-28_pro09",
+      "model": "model-2",
+      "report": "data/reports/2025-09-28_pro09.html",
+      "meta": {
+        "model": "demo2",
+        "dataset": "pro@1.0.0",
+        "prompt_cfg": "icl-8shot",
+        "retriever": "hybrid-v3",
+        "date": "2025-09-28"
+      },
+      "accuracy": 0.7519,
+      "grounding": 0.6393,
+      "safety": 1.0,
+      "robustness": 0.6776,
+      "bias": 0.8663,
+      "calibration": 0.7572,
+      "trust_score": 0.7429,
+      "audit": {
+        "status": "ok",
+        "trail": [
+          {
+            "doc": "PAPER:vaswani2017",
+            "chunk": 40,
+            "score": 0.812
+          },
+          {
+            "doc": "CARD:llama31",
+            "chunk": 34,
+            "score": 0.585
+          }
+        ],
+        "citations": [
+          "PAPER:vaswani2017",
+          "CARD:llama31"
+        ]
+      },
+      "provenance": {
+        "status": "ok",
+        "root": "3f9aab9a4428f4f29c290db779d8eb0a1c50f94a457364e8b45b147ff1705981",
+        "bundle": "data/proofs/2025-09-28_pro09_bundle.zip"
+      }
+    },
+    {
+      "run_id": "2025-09-28_pro10",
+      "model": "model-3",
+      "report": "data/reports/2025-09-28_pro10.html",
+      "meta": {
+        "model": "demo3",
+        "dataset": "pro@1.0.0",
+        "prompt_cfg": "icl-8shot",
+        "retriever": "hybrid-v3",
+        "date": "2025-09-28"
+      },
+      "accuracy": 0.7014,
+      "grounding": 0.4439,
+      "safety": 1.0,
+      "robustness": 0.7115,
+      "bias": 0.8851,
+      "calibration": 0.7369,
+      "trust_score": 0.654,
+      "audit": {
+        "status": "ok",
+        "trail": [
+          {
+            "doc": "PAPER:vaswani2017",
+            "chunk": 28,
+            "score": 0.756
+          },
+          {
+            "doc": "CARD:llama31",
+            "chunk": 39,
+            "score": 0.725
+          }
+        ],
+        "citations": [
+          "PAPER:vaswani2017",
+          "CARD:llama31"
+        ]
+      },
+      "provenance": {
+        "status": "ok",
+        "root": "0a2cf0b8fe51a6b400465286b88365cc984f6f9b0759889f4736b91c60793bb4",
+        "bundle": "data/proofs/2025-09-28_pro10_bundle.zip"
+      }
+    }
+  ]
+}
