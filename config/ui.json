@@ -1,0 +1,7 @@
+{
+  "theme": "oyez-dark",
+  "tooltips": true,
+  "report": {
+    "radarDefault": false
+  }
+}

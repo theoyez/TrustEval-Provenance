@@ -1,0 +1,14 @@
+{
+  "version": "2.5.0",
+  "weights": {
+    "accuracy": 0.6,
+    "grounding": 0.3,
+    "safety": 0.1
+  },
+  "features": {
+    "robustness": true,
+    "bias": true,
+    "calibration": true,
+    "provenance": true
+  }
+}

@@ -1,0 +1,55 @@
+<!doctype html><html><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Run report — 2025-09-30_pro04</title>
+<link rel="stylesheet" href="../../web/styles.css"/>
+<script src="../../web/common.js"></script>
+<script src="../../web/radar.js"></script>
+</head><body>
+  <div class="header">
+    <a class="btn" href="../../index.html">← Leaderboard</a>
+    <h1>Run report</h1>
+    <div style="display:flex;gap:8px">
+      <button class="btn" onclick="window.print()">Export PDF</button>
+      <button class="btn" id="toggleChart">Switch to Radar</button>
+    </div>
+  </div>
+  <div class="container">
+    <div class="card"><div class="small">model: demo5 • dataset: trusteval-provenance@demo • retriever: hybrid-v3 • prompt: icl-8shot • date: 2025-09-30</div></div>
+    <div id="bars" class="grid">
+      
+        <div class='card'><div class='small'>Accuracy</div><div class='progress'><i style='width:59.0%'></i></div><div class='small'>59.0%</div></div>
+        <div class='card'><div class='small'>Grounding</div><div class='progress'><i style='width:62.0%'></i></div><div class='small'>62.0%</div></div>
+        <div class='card'><div class='small'>Safety</div><div class='progress'><i style='width:100.0%'></i></div><div class='small'>100.0%</div></div>
+        <div class='card'><div class='small'>Robustness</div><div class='progress'><i style='width:67.0%'></i></div><div class='small'>67.0%</div></div><div class='card'><div class='small'>Bias</div><div class='progress'><i style='width:82.0%'></i></div><div class='small'>82.0%</div></div><div class='card'><div class='small'>Calibration</div><div class='progress'><i style='width:76.0%'></i></div><div class='small'>76.0%</div></div>
+        <div class='card'><div class='small'>Trust</div><div class='progress'><i style='width:64.0%'></i></div><div class='small'>64.0%</div></div>
+        
+    </div>
+    <div id="radarWrap" class="card" style="display:none">
+      <canvas id="radar" width="640" height="420"></canvas>
+    </div>
+    <div class="card">
+      <button class="btn" onclick="toggleDrawer('audit')">▸ Audit trail & proofs</button>
+      <div id="audit" class="drawer">
+        <div class="small">Retrieved candidates match cited keys; consistency ok.</div>
+        <div class='small'>Merkle root: 6dc011c167ff281184bae502e0842ac545da143c655b63740822403dce467d8e — <a href='../../data/proofs/2025-09-30_pro04.json'>view proof</a></div>
+      </div>
+    </div>
+  </div>
+<script>
+const labels = ["Accuracy", "Grounding", "Safety", "Robustness", "Bias", "Calibration"];
+const values = [59.0, 62.0, 100.0, 67.0, 82.0, 76.0];
+const maxVal = 100;
+const toggle = document.getElementById('toggleChart');
+const bars = document.getElementById('bars');
+const wrap = document.getElementById('radarWrap');
+const canvas = document.getElementById('radar');
+toggle.addEventListener('click', ()=>{
+  if(wrap.style.display==='none'){
+    wrap.style.display='block'; bars.style.display='none'; toggle.textContent='Switch to Bars';
+    drawRadar(canvas, labels, values, maxVal);
+  }else{
+    wrap.style.display='none'; bars.style.display='grid'; toggle.textContent='Switch to Radar';
+  }
+});
+</script>
+</body></html>

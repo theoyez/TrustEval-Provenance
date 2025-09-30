@@ -1,0 +1,12 @@
+{
+  "run_id": "2025-09-30_pro07",
+  "root": "df86b0c7230eb5acd57eb0e1b9ded06059aa596fca8636665c80f134ab0dc8b5",
+  "citations": [
+    {
+      "item": "q1",
+      "doc": "PAPER:vaswani2017",
+      "chunk": 19,
+      "hash": "6c87f68371b28954707ebb92afee7ccffb74c6f71ec8fea8a98cf6104289585b"
+    }
+  ]
+}

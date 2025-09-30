@@ -1,0 +1,56 @@
+<!doctype html><html><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>TrustEval-Provenance</title>
+<link rel="stylesheet" href="web/styles.css"/>
+<script src="web/common.js"></script>
+</head><body>
+  <div class="header">
+    <h1>TrustEval-Provenance</h1>
+    <div>
+      <a class="btn" href="compare.html">Compare</a>
+      <a class="btn" href="README.md">README</a>
+    </div>
+  </div>
+  <div class="container">
+    <div class="banner">Click the pills to expand details. Use Compare for deltas. Reports include a Radar ↔ Bars toggle.</div>
+    <input id="search" class="input" placeholder="Filter by run id, model, or meta…"/>
+    <table class="table">
+      <thead>
+        <tr id="thead"></tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+<script>
+const COLUMNS = ["run", "model", "accuracy", "grounding", "safety", "robustness", "bias", "calibration", "trust", "provenance", "audit", "report"];
+const HEADS = {{
+  run:'Run', model:'Model', accuracy:'Accuracy', grounding:'Grounding', safety:'Safety',
+  robustness:'Robustness', bias:'Bias', calibration:'Calibration', trust:'Trust',
+  provenance:'Provenance', audit:'Audit', report:'Report'
+}};
+let rows=[];
+function renderHead(){
+  const h = document.getElementById('thead'); h.innerHTML='';
+  COLUMNS.forEach(c=>{
+    const th = document.createElement('th');
+    th.textContent = HEADS[c] || c;
+    th.className = 'sort tooltip'; th.dataset.tip = 'Click to sort';
+    th.addEventListener('click', ()=>{ sortBy(rows, c, (th.dataset.dir=th.dataset.dir==='asc'?'desc':'asc')); renderTable(rows, COLUMNS, true); });
+    h.appendChild(th);
+  });
+}
+(async ()=>{
+  renderHead();
+  const data = await loadJSON('leaderboard.json');
+  rows = data.runs || [];
+  const inp = document.getElementById('search');
+  function apply(){
+    const q = (inp.value||'').toLowerCase();
+    const view = rows.filter(r => JSON.stringify(r).toLowerCase().includes(q));
+    renderTable(view, COLUMNS, true);
+  }
+  inp.addEventListener('input', apply);
+  apply();
+})();
+</script>
+</body></html>
