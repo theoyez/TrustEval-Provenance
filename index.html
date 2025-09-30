@@ -1,0 +1,64 @@
+
+<!doctype html><html><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TrustEval Pro</title>
+<style>body{background:#0a0c0d;color:#e7eaed;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif}</style>
+<link rel="stylesheet" href="config/theme.css?v=20250930181259">
+</head><body>
+<div class="container">
+  <div style="display:flex;gap:10px;margin:10px 0 6px">
+    <a class="btn" href="web/compare.html">Compare</a>
+    <a class="btn" href="web/how-it-works.html">How it works</a>
+  </div>
+  <h1>TrustEval Pro</h1>
+  <input id="q" class="search" placeholder="Filter by run id, model, or meta…">
+  <table class="table">
+    <thead><tr id="head"></tr></thead>
+    <tbody id="body"></tbody>
+  </table>
+</div>
+<script>
+const pct=x=>(x*100).toFixed(1)+'%';
+let runs=[];
+function head(cols){head.innerHTML=cols.map(c=>`<th title="${c.tip||''}">${c.label}</th>`).join('');}
+function pill(status,id){const cls=status==='ok'?'ok':(status==='warn'?'warn':'err');return `<span class="pill ${cls}"><span>${status}</span> <span class="chev" data-target="${id}"><span class="arrow">▸</span></span></span>`;}
+function row(r, cols){
+  const base="m_"+r.run_id;
+  let tds = `<td class="mono">${r.run_id}</td><td><span class="chev" data-target="${base}"><span class="arrow">▸</span></span> ${r.meta.model}</td>`;
+  cols.forEach(c=>{if(['Run','Model','Audit','Provenance','Report'].includes(c.label))return; tds+=`<td class="mono">${pct(r[c.key]||0)}</td>`;});
+  tds += `<td>${pill(r.audit.status, base+"_aud")}</td>`;
+  if (cols.find(c=>c.label==='Provenance')) { tds += `<td>${pill((r.provenance||{}).status||'warn', base+"_prov")}</td>`; }
+  tds += `<td><a href="data/reports/${r.run_id}.html">Report</a></td>`;
+  let drawers = `<tr><td colspan="99"><div id="${base}" class="details"><div class="meta">model: ${r.meta.model} · dataset: ${r.meta.dataset} · retriever: ${r.meta.retriever} · prompt: ${r.meta.prompt_cfg} · date: ${r.meta.date}</div></div>`;
+  drawers += `<div id="${base}_aud" class="details"><div class="meta">Audit trail present (top‑k retrieval + citations).</div></div>`;
+  if (cols.find(c=>c.label==='Provenance')) drawers += `<div id="${base}_prov" class="details"><div class="meta">Merkle root: <span class="mono">${(r.provenance||{}).root||'—'}</span> ${r.provenance&&r.provenance.bundle?('· <a class="mono" href="'+r.provenance.bundle+'">download proof</a>'):''}</div></div>`;
+  drawers += `</td></tr>`;
+  return `<tr class="row">${tds}</tr>` + drawers;
+}
+function render(cols){
+  const q=(document.getElementById('q').value||'').toLowerCase();
+  body.innerHTML = runs.filter(r=>[r.run_id,r.meta.model,r.meta.dataset].join(' ').toLowerCase().includes(q)).map(r=>row(r, cols)).join('');
+  document.querySelectorAll('.chev').forEach(el=>{
+    el.onclick=()=>{const id=el.dataset.target;const box=document.getElementById(id);if(!box)return;const open = box.style.display!=='block';box.style.display=open?'block':'none';el.querySelector('.arrow').textContent=open?'▾':'▸';};
+  });
+}
+(async function(){
+  const data = await fetch('leaderboard.json').then(r=>r.json());
+  runs = data.runs||[];
+  const cols = [
+    {label:'Run'}, {label:'Model'},
+    {label:'Accuracy', key:'accuracy', tip:'Partial-credit scoring (exact/token/regex/edit)'},
+    {label:'Grounding', key:'grounding', tip:'Allowed-source citations; cap if not in retrieved top‑k'},
+    {label:'Safety', key:'safety', tip:'PII/Toxicity/Policy deductions'},
+    {label:'Robustness', key:'robustness', tip:'Perturbation stability'}, {label:'Bias', key:'bias', tip:'Bias penalties'}, {label:'Calibration', key:'calibration', tip:'ECE proxy'},
+    {label:'Trust', key:'trust_score', tip:'Weighted blend'},
+    {label:'Audit'}
+    ,{label:'Provenance'}
+    ,{label:'Report'}
+  ];
+  head(cols);
+  render(cols);
+  document.getElementById('q').addEventListener('input', ()=>render(cols));
+})();
+</script>
+</body></html>
