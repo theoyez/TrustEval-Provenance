@@ -1,0 +1,10 @@
+{
+  "run_id": "2025-09-30_provenance07",
+  "merkle_root": "500a5aa069d8ad3fcf8d6d75c4a0aa11572e08477d309e788d1b8aad1d1b18ce",
+  "entries": [
+    {
+      "chunk": "example",
+      "hash": "71c9fed0d7eb2fa3faa1f413d98800702cb887759c1b64b0be019856b5f2e5ae"
+    }
+  ]
+}

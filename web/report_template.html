@@ -1,0 +1,40 @@
+
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Run report</title><link rel="stylesheet" href="styles.css"></head>
+<body>
+<header><a class="btn" href="../index.html">← Leaderboard</a><a class="btn" href="#" onclick="window.print()">Export PDF</a></header>
+<main>
+  <h2 class="mono">__RUN_ID__</h2>
+  <div class="toolbar"><button class="btn" id="toggle">Toggle radar</button></div>
+  <div id="cards" class="report-card"></div>
+  <details class="drawer" style="margin-top:18px"><summary class="btn">Audit trail__EXTRA__</summary>
+    <div class="grid2">
+      <div><b>Retrieval candidates</b><div class="small mono">__CANDS__</div></div>
+      <div><b>Citations used</b><div class="small mono">__CITES__</div></div>
+    </div>
+    __PROOF_HTML__
+  </details>
+</main>
+<script>
+const METRICS = __METRICS__;
+const VALS = __VALS__;
+const cards = document.getElementById('cards');
+function bars(){
+  cards.innerHTML = METRICS.map(k=>'<div class="metric"><div class="hdr"><b>'+k[0].toUpperCase()+k.slice(1)+'</b></div>'+
+  '<div class="small">'+(VALS[k]*100).toFixed(1)+'%</div><div class="bar"><i style="width:'+(VALS[k]*100)+'%"></i></div></div>').join('');
+}
+function radar(){
+  const size=360, cx=180, cy=150, R=120;
+  function pt(i,v){const ang=-Math.PI/2 + i*2*Math.PI/METRICS.length; return [cx+Math.cos(ang)*R*v, cy+Math.sin(ang)*R*v];}
+  let poly = METRICS.map((k,i)=> pt(i, VALS[k]||0)).map(p=>p.join(',')).join(' ');
+  let grid = Array(4).fill(0).map((_,r)=>{
+    const frac=(r+1)/4; const ring = METRICS.map((_,i)=> pt(i,frac)).map(p=>p.join(',')).join(' ');
+    return '<polygon points="'+ring+'" fill="none" stroke="#273244"/>';
+  }).join('');
+  let axes = METRICS.map((k,i)=>{ const a=pt(i,1); return '<line x1="'+cx+'" y1="'+cy+'" x2="'+a[0]+'" y2="'+a[1]+'" stroke="#273244"/>'; }).join('');
+  let labels = METRICS.map((k,i)=>{ const a=pt(i,1.1); return '<text x="'+a[0]+'" y="'+a[1]+'" fill="#9aa3ad" font-size="12" text-anchor="middle">'+k+'</text>'; }).join('');
+  cards.innerHTML = '<div class="metric" style="grid-column:1/-1"><svg class="radar" viewBox="0 0 '+size+' '+size+'"><g>'+grid+' '+axes+'<polygon points="'+poly+'" fill="rgba(109,211,201,.25)" stroke="#6dd3c9"/></g>'+labels+'</svg></div>';
+}
+bars(); let mode='bars'; document.getElementById('toggle').onclick=()=>{ mode=mode==='bars'?'radar':'bars'; (mode==='bars'?bars:radar)(); };
+</script>
+</body></html>
