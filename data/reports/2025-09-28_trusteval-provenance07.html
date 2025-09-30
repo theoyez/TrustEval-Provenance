@@ -1,0 +1,133 @@
+
+<!doctype html><html><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Run report</title>
+<style>body{background:#0a0c0d;color:#e7eaed;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif}</style>
+<link rel="stylesheet" href="../../config/theme.css?v=20250930183112">
+</head><body>
+<div class="container">
+  <div style="display:flex;gap:10px;margin:10px 0">
+    <a class="btn" href="../../index.html">← Leaderboard</a>
+    <a class="btn" href="#" onclick="window.print()">🖨️ Export PDF</a>
+  </div>
+  <h2 id="rid">—</h2>
+
+  <div class="toggle">
+    <a class="btn active" id="modeBars">Bars</a>
+    <a class="btn" id="modeRadar">Radar</a>
+  </div>
+
+  <div id="bars">
+    <div class="grid3" id="cards"></div>
+  </div>
+
+  <div id="radarWrap" style="display:none" class="card">
+    <canvas id="radar" width="520" height="360" style="max-width:100%"></canvas>
+    <div class="meta" id="radarLegend"></div>
+  </div>
+
+  <div class="card">
+    <div class="chev" id="tog"><span class="arrow">▸</span> Audit trail  & proofs</div>
+    <div id="bx" class="details">
+      <div class="meta">Retrieved candidates</div>
+      <ul id="retr" class="meta"></ul>
+      <div class="meta">Citations used</div>
+      <ul id="cites" class="meta"></ul>
+      <div class='meta'>Proof bundle: <a class='mono' id='proofLink'>download</a></div>
+    </div>
+  </div>
+</div>
+<script>
+const pct=x=>(x*100).toFixed(1)+'%';
+function card(id,label){return `<div class="card"><div class="label">${label}</div><div id="${id}"></div></div>`;}
+function bar(el,score){el.innerHTML = `<div class="value">${pct(score)}</div><div class="compbar"><div class="ach" style="width:${score*100}%"></div></div><div class="kv"><span>Achieved</span><span>${pct(score)}</span></div><div class="kv"><span>Missing</span><span>${pct(1-score)}</span></div>`;}
+
+// Minimal radar renderer (pure canvas)
+function drawRadar(canvas, labels, values){
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+  const cx=W/2, cy=H/2, R=Math.min(W,H)*0.36;
+  ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth=1;
+
+  // grid rings
+  for (let i=1;i<=4;i++){ let r=R*i/4; ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke(); }
+
+  // axes
+  const N=labels.length;
+  for (let i=0;i<N;i++){
+    const a = -Math.PI/2 + i*(2*Math.PI/N);
+    const x=cx + R*Math.cos(a), y=cy + R*Math.sin(a);
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y); ctx.stroke();
+    // labels
+    ctx.fillStyle='rgba(230,232,239,0.9)'; ctx.font='12px system-ui';
+    const lx = cx + (R+16)*Math.cos(a), ly = cy + (R+16)*Math.sin(a);
+    ctx.textAlign = Math.cos(a)>0.2 ? 'left' : (Math.cos(a)<-0.2 ? 'right' : 'center');
+    ctx.fillText(labels[i], lx, ly);
+  }
+
+  // polygon
+  ctx.beginPath();
+  for (let i=0;i<N;i++){
+    const a=-Math.PI/2 + i*(2*Math.PI/N);
+    const r = R * Math.max(0, Math.min(1, values[i]));
+    const x=cx + r*Math.cos(a), y=cy + r*Math.sin(a);
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  }
+  ctx.closePath();
+  ctx.fillStyle='rgba(167,139,250,0.25)';
+  ctx.strokeStyle='rgba(167,139,250,0.9)';
+  ctx.lineWidth=2;
+  ctx.fill(); ctx.stroke();
+}
+
+const PLUS = true;
+const PROV = true;
+
+(async function(){
+  const id = location.pathname.split('/').pop().replace('.html','');
+  const board = await fetch('../../leaderboard.json').then(r=>r.json());
+  const r = (board.runs||[]).find(x=>x.run_id===id);
+  rid.textContent = id;
+  const labels = ['Accuracy','Grounding','Safety'].concat(PLUS?['Robustness','Bias','Calibration']:[]).concat(['Trust']);
+  const vals = [r.accuracy||0, r.grounding||0, r.safety||0].concat(PLUS?[r.robustness||0, r.bias||0, r.calibration||0]:[]).concat([r.trust_score||0]);
+
+  // Bars UI
+  const cards = [];
+  cards.push(card('c_acc','Accuracy'));
+  cards.push(card('c_gnd','Grounding'));
+  cards.push(card('c_safe','Safety'));
+  if (PLUS){ cards.push(card('c_rob','Robustness')); cards.push(card('c_bias','Bias')); cards.push(card('c_cal','Calibration')); }
+  cards.push(card('c_trust','Trust'));
+  document.querySelector('#cards').innerHTML = cards.join('');
+  function renderBars(){
+    const idd = (x)=>document.getElementById(x);
+    bar(idd('c_acc'), r.accuracy||0);
+    bar(idd('c_gnd'), r.grounding||0);
+    bar(idd('c_safe'), r.safety||0);
+    if (PLUS){ bar(idd('c_rob'), r.robustness||0); bar(idd('c_bias'), r.bias||0); bar(idd('c_cal'), r.calibration||0); }
+    bar(idd('c_trust'), r.trust_score||0);
+  }
+  renderBars();
+
+  // Radar UI
+  const rad = document.getElementById('radar');
+  function renderRadar(){
+    drawRadar(rad, labels, vals);
+    radarLegend.textContent = 'Filled area shows achieved; outer circle is 100% on each axis.';
+  }
+
+  // Toggle
+  const bBars = document.getElementById('modeBars');
+  const bRad  = document.getElementById('modeRadar');
+  bBars.onclick = ()=>{ bBars.classList.add('active'); bRad.classList.remove('active'); document.getElementById('bars').style.display='block'; document.getElementById('radarWrap').style.display='none'; };
+  bRad.onclick  = ()=>{ bRad.classList.add('active'); bBars.classList.remove('active'); document.getElementById('bars').style.display='none'; document.getElementById('radarWrap').style.display='block'; renderRadar(); };
+
+  // Audit block
+  const trail=[{doc:'PAPER:vaswani2017',chunk:19,score:0.85},{doc:'CARD:llama31',chunk:8,score:0.73}];
+  retr.innerHTML = trail.map(t=>`<li>${t.doc} · chunk ${t.chunk} · score ${t.score}</li>`).join('');
+  cites.innerHTML = ['PAPER:vaswani2017','CARD:llama31'].map(c=>`<li>${c}</li>`).join('');
+  document.getElementById('tog').onclick=()=>{const o=bx.style.display!=='block';bx.style.display=o?'block':'none';document.querySelector('#tog .arrow').textContent=o?'▾':'▸';};
+})();
+</script>
+</body></html>

@@ -1,0 +1,275 @@
+{
+  "updated_at": "2025-09-30 18:31 UTC",
+  "runs": [
+    {
+      "run_id": "2025-09-28_trusteval-provenance01",
+      "model": "model-1",
+      "report": "data/reports/2025-09-28_trusteval-provenance01.html",
+      "meta": {
+        "model": "demo1",
+        "dataset": "trusteval-provenance@1.0.0",
+        "retriever": "hybrid-v3",
+        "prompt_cfg": "icl-8shot",
+        "date": "2025-09-28"
+      },
+      "accuracy": 0.43,
+      "grounding": 0.34,
+      "safety": 1.0,
+      "robustness": 0.56,
+      "bias": 0.825,
+      "calibration": 0.705,
+      "trust_score": 0.46,
+      "audit": {
+        "status": "ok"
+      },
+      "provenance": {
+        "status": "ok",
+        "root": "be0266aeee1879d29b94042b28b83d05122b23b36321ce1ab93b3bbcc3dc1bd6",
+        "bundle": "data/proofs/2025-09-28_trusteval-provenance01_bundle.zip"
+      }
+    },
+    {
+      "run_id": "2025-09-28_trusteval-provenance02",
+      "model": "model-2",
+      "report": "data/reports/2025-09-28_trusteval-provenance02.html",
+      "meta": {
+        "model": "demo2",
+        "dataset": "trusteval-provenance@1.0.0",
+        "retriever": "hybrid-v3",
+        "prompt_cfg": "icl-8shot",
+        "date": "2025-09-28"
+      },
+      "accuracy": 0.46,
+      "grounding": 0.38,
+      "safety": 1.0,
+      "robustness": 0.57,
+      "bias": 0.83,
+      "calibration": 0.71,
+      "trust_score": 0.49,
+      "audit": {
+        "status": "ok"
+      },
+      "provenance": {
+        "status": "ok",
+        "root": "06ab97fb9e3a14aefc0e3433ec894ce2aa4cfdc68f17fc841ee294dbde9e7853",
+        "bundle": "data/proofs/2025-09-28_trusteval-provenance02_bundle.zip"
+      }
+    },
+    {
+      "run_id": "2025-09-28_trusteval-provenance03",
+      "model": "model-3",
+      "report": "data/reports/2025-09-28_trusteval-provenance03.html",
+      "meta": {
+        "model": "demo3",
+        "dataset": "trusteval-provenance@1.0.0",
+        "retriever": "hybrid-v3",
+        "prompt_cfg": "icl-8shot",
+        "date": "2025-09-28"
+      },
+      "accuracy": 0.49,
+      "grounding": 0.42,
+      "safety": 1.0,
+      "robustness": 0.58,
+      "bias": 0.835,
+      "calibration": 0.715,
+      "trust_score": 0.52,
+      "audit": {
+        "status": "warn"
+      },
+      "provenance": {
+        "status": "ok",
+        "root": "4b482f9cfaa8339665de04168aef5f681fc745400ab62fcfa08a66d39792661e",
+        "bundle": "data/proofs/2025-09-28_trusteval-provenance03_bundle.zip"
+      }
+    },
+    {
+      "run_id": "2025-09-28_trusteval-provenance04",
+      "model": "model-4",
+      "report": "data/reports/2025-09-28_trusteval-provenance04.html",
+      "meta": {
+        "model": "demo4",
+        "dataset": "trusteval-provenance@1.0.0",
+        "retriever": "hybrid-v3",
+        "prompt_cfg": "icl-8shot",
+        "date": "2025-09-28"
+      },
+      "accuracy": 0.52,
+      "grounding": 0.46,
+      "safety": 1.0,
+      "robustness": 0.59,
+      "bias": 0.84,
+      "calibration": 0.72,
+      "trust_score": 0.55,
+      "audit": {
+        "status": "ok"
+      },
+      "provenance": {
+        "status": "ok",
+        "root": "20683117fee88619c0b52b2bb1d3725b5aa73cb6b5f8f2978883c1d5a98d0769",
+        "bundle": "data/proofs/2025-09-28_trusteval-provenance04_bundle.zip"
+      }
+    },
+    {
+      "run_id": "2025-09-28_trusteval-provenance05",
+      "model": "model-5",
+      "report": "data/reports/2025-09-28_trusteval-provenance05.html",
+      "meta": {
+        "model": "demo5",
+        "dataset": "trusteval-provenance@1.0.0",
+        "retriever": "hybrid-v3",
+        "prompt_cfg": "icl-8shot",
+        "date": "2025-09-28"
+      },
+      "accuracy": 0.55,
+      "grounding": 0.5,
+      "safety": 1.0,
+      "robustness": 0.6,
+      "bias": 0.845,
+      "calibration": 0.725,
+      "trust_score": 0.58,
+      "audit": {
+        "status": "ok"
+      },
+      "provenance": {
+        "status": "ok",
+        "root": "2b639973651aeda6cc5acd8bd1d0dc646c291494c6a69536d1785afa5a360d95",
+        "bundle": "data/proofs/2025-09-28_trusteval-provenance05_bundle.zip"
+      }
+    },
+    {
+      "run_id": "2025-09-28_trusteval-provenance06",
+      "model": "model-6",
+      "report": "data/reports/2025-09-28_trusteval-provenance06.html",
+      "meta": {
+        "model": "demo6",
+        "dataset": "trusteval-provenance@1.0.0",
+        "retriever": "hybrid-v3",
+        "prompt_cfg": "icl-8shot",
+        "date": "2025-09-28"
+      },
+      "accuracy": 0.58,
+      "grounding": 0.54,
+      "safety": 1.0,
+      "robustness": 0.61,
+      "bias": 0.85,
+      "calibration": 0.73,
+      "trust_score": 0.61,
+      "audit": {
+        "status": "ok"
+      },
+      "provenance": {
+        "status": "ok",
+        "root": "6f477d8f8a23c4d623275acb4d425bc12e6bdc51e8131e951290057aeb95cd66",
+        "bundle": "data/proofs/2025-09-28_trusteval-provenance06_bundle.zip"
+      }
+    },
+    {
+      "run_id": "2025-09-28_trusteval-provenance07",
+      "model": "model-7",
+      "report": "data/reports/2025-09-28_trusteval-provenance07.html",
+      "meta": {
+        "model": "demo7",
+        "dataset": "trusteval-provenance@1.0.0",
+        "retriever": "hybrid-v3",
+        "prompt_cfg": "icl-8shot",
+        "date": "2025-09-28"
+      },
+      "accuracy": 0.61,
+      "grounding": 0.58,
+      "safety": 1.0,
+      "robustness": 0.62,
+      "bias": 0.855,
+      "calibration": 0.735,
+      "trust_score": 0.64,
+      "audit": {
+        "status": "warn"
+      },
+      "provenance": {
+        "status": "ok",
+        "root": "5040fa1eb9f49449d13a056bfae5ba82a3833f25916f2638a044e1bec46e7181",
+        "bundle": "data/proofs/2025-09-28_trusteval-provenance07_bundle.zip"
+      }
+    },
+    {
+      "run_id": "2025-09-28_trusteval-provenance08",
+      "model": "model-1",
+      "report": "data/reports/2025-09-28_trusteval-provenance08.html",
+      "meta": {
+        "model": "demo1",
+        "dataset": "trusteval-provenance@1.0.0",
+        "retriever": "hybrid-v3",
+        "prompt_cfg": "icl-8shot",
+        "date": "2025-09-28"
+      },
+      "accuracy": 0.64,
+      "grounding": 0.62,
+      "safety": 1.0,
+      "robustness": 0.63,
+      "bias": 0.86,
+      "calibration": 0.74,
+      "trust_score": 0.67,
+      "audit": {
+        "status": "ok"
+      },
+      "provenance": {
+        "status": "ok",
+        "root": "3ac23435e7283ebeae31462d66132d39e24241062c68206257f2148749912d2b",
+        "bundle": "data/proofs/2025-09-28_trusteval-provenance08_bundle.zip"
+      }
+    },
+    {
+      "run_id": "2025-09-28_trusteval-provenance09",
+      "model": "model-2",
+      "report": "data/reports/2025-09-28_trusteval-provenance09.html",
+      "meta": {
+        "model": "demo2",
+        "dataset": "trusteval-provenance@1.0.0",
+        "retriever": "hybrid-v3",
+        "prompt_cfg": "icl-8shot",
+        "date": "2025-09-28"
+      },
+      "accuracy": 0.67,
+      "grounding": 0.66,
+      "safety": 1.0,
+      "robustness": 0.64,
+      "bias": 0.865,
+      "calibration": 0.745,
+      "trust_score": 0.7,
+      "audit": {
+        "status": "ok"
+      },
+      "provenance": {
+        "status": "ok",
+        "root": "554593542d9b4251a749581870aa5b1286f869d60b345312cf3b4b4a4696437f",
+        "bundle": "data/proofs/2025-09-28_trusteval-provenance09_bundle.zip"
+      }
+    },
+    {
+      "run_id": "2025-09-28_trusteval-provenance10",
+      "model": "model-3",
+      "report": "data/reports/2025-09-28_trusteval-provenance10.html",
+      "meta": {
+        "model": "demo3",
+        "dataset": "trusteval-provenance@1.0.0",
+        "retriever": "hybrid-v3",
+        "prompt_cfg": "icl-8shot",
+        "date": "2025-09-28"
+      },
+      "accuracy": 0.7,
+      "grounding": 0.7,
+      "safety": 1.0,
+      "robustness": 0.65,
+      "bias": 0.87,
+      "calibration": 0.75,
+      "trust_score": 0.73,
+      "audit": {
+        "status": "ok"
+      },
+      "provenance": {
+        "status": "ok",
+        "root": "fc0d0fd2fff587d670614a9de3b797914ff4621cf73a492b9435dbb68c41f26c",
+        "bundle": "data/proofs/2025-09-28_trusteval-provenance10_bundle.zip"
+      }
+    }
+  ]
+}
