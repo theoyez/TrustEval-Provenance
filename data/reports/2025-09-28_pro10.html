@@ -1,0 +1,23 @@
+
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Run report</title>
+<style>body{background:#0a0c0d;color:#e7eaed;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif} .bubble{display:none!important}</style>
+<link rel="stylesheet" href="../../config/theme.css?v=20250928194153">
+</head><body><div class="container" style="padding:16px">
+<a class="btn" href="../../index.html">← Leaderboard</a> <a class="btn" href="javascript:window.print()">Export PDF</a>
+<h2 id="rid"></h2>
+<div class="grid3" id="cards"></div>
+<div class="card" style="margin-top:12px">
+  <div id="tog" class="chev">▸ Audit trail &amp; proofs</div>
+  <div id="bx" style="display:none;margin-top:8px">
+    <div class="grid3">
+      <div class="card"><div class="small">Retrieval candidates</div><ul id="retr" class="small"></ul></div>
+      <div class="card"><div class="small">Citations used</div><ul id="cites" class="small"></ul></div>
+      <div class="card"><div class="small">Proof path</div><div id="proof" class="small"></div></div>
+    </div>
+  </div>
+</div>
+</div>
+<script>
+(async function(){const id=location.pathname.split('/').pop().replace('.html','');const m=await fetch('../../leaderboard.json').then(r=>r.json());const row=(m.runs||[]).find(r=>r.run_id===id);if(!row){rid.textContent=id;cards.innerHTML='<div class=small>Not found.</div>';return;}rid.textContent=id;function card(lbl,val){return `<div class='card'><div class='small'>${lbl}</div><div class='val'>${(val*100).toFixed(1)}%</div><div class='bar'><div class='fill' style='width:${val*100}%'></div></div></div>`;}const labels={'accuracy':'Accuracy','grounding':'Grounding','safety':'Safety','robustness':'Robustness','bias':'Bias','calibration':'Calibration','trust_score':'Trust'};cards.innerHTML=Object.keys(labels).filter(k=>k in row).map(k=>card(labels[k],row[k])).join('');const trail=(row.audit&&row.audit.trail)||[];retr.innerHTML=trail.map(t=>`<li><code>${t.doc}</code> · chunk <b>${t.chunk}</b> · score ${t.score}</li>`).join('')||'<li>—</li>';const cite=(row.audit&&row.audit.citations)||[];cites.innerHTML=cite.map(c=>`<li><code>${c}</code></li>`).join('')||'<li>—</li>';const prov=row.provenance||{};let p=prov.root?`Merkle root <code>${prov.root}</code>`:'—';if(prov.bundle){p+=` · <a href='../../${prov.bundle}'>download bundle</a>`}proof.innerHTML=p;const t=document.getElementById('tog'),b=document.getElementById('bx');t.addEventListener('click',()=>{const o=b.style.display!=='block';b.style.display=o?'block':'none';t.textContent=o?'▾ Audit trail & proofs':'▸ Audit trail & proofs';});})();
+</script></body></html>
