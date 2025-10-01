@@ -1,0 +1,44 @@
+
+<!doctype html>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Compare runs</title><link rel="stylesheet" href="web/styles.css"/>
+<div class="wrap">
+  <a class="btn" href="index.html">← Leaderboard</a>
+  <h1>Compare runs</h1>
+  <div class="row" style="gap:8px;margin:8px 0">
+    <select id="left"></select>
+    <select id="right"></select>
+    <a class="btn" id="open">Open reports</a>
+  </div>
+  <div id="meta" class="legend"></div>
+  <table class="table" style="margin-top:12px">
+    <thead><tr><th>Metric</th><th id="lh">Left</th><th id="rh">Right</th><th>Δ (right−left)</th></tr></thead>
+    <tbody id="tb"></tbody>
+  </table>
+</div>
+<script src="web/common.js"></script>
+<script>
+(async ()=>{
+  const data = await loadJSON('data/leaderboard.json');
+  const runs = data.runs||[];
+  const L=$('#left'), R=$('#right'), tb=$('#tb'), meta=$('#meta');
+
+  function opt(v){ const o=document.createElement('option'); o.value=v.id; o.textContent=`${v.id} — ${v.model}`; return o; }
+  runs.forEach(r=>{ L.appendChild(opt(r)); R.appendChild(opt(r)); });
+
+  function fill(){
+    const l = runs.find(r=>r.id===L.value), r = runs.find(x=>x.id===R.value); if(!l||!r) return;
+    $('#lh').textContent=l.id; $('#rh').textContent=r.id;
+    const keys = Object.keys(l).filter(k=>['accuracy','grounding','safety','robustness','bias','calibration','trust'].includes(k) && typeof l[k]==='number');
+    tb.innerHTML = keys.map(k=>{
+      const d=(r[k]-l[k])*100, sign=d>0?'+':''; const col = d>=0?'var(--ok)':'var(--bad)';
+      return `<tr><td>${k}</td><td>${fmt(l[k])}</td><td>${fmt(r[k])}</td><td style="color:${col}">${sign}${d.toFixed(1)}%</td></tr>`;
+    }).join('');
+    meta.innerHTML = [`Left: <span class='badge'>${l.model}</span>`,`Right: <span class='badge'>${r.model}</span>`, l.meta?.dataset?`dataset: <span class='badge'>${l.meta.dataset}</span>`:'', l.meta?.prompt?`prompt: <span class='badge'>${l.meta.prompt}</span>`:''].filter(Boolean).join(' ');
+  }
+
+  L.onchange=fill; R.onchange=fill;
+  if(runs.length>=2){ L.value=runs[0].id; R.value=runs[1].id; fill(); }
+  $('#open').onclick=()=>{ window.open(`data/reports/${L.value}.html`,'_blank'); window.open(`data/reports/${R.value}.html`,'_blank'); };
+})();
+</script>

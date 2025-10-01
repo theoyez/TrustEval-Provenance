@@ -1,0 +1,126 @@
+
+<!doctype html>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>TrustEval — Leaderboard</title>
+<link rel="stylesheet" href="web/styles.css"/>
+<div class="wrap">
+  <div class="topbar">
+    <a class="btn" href="compare.html">Compare</a>
+    <a class="btn" href="README.html">README</a>
+  </div>
+  <h1 id="title">TrustEval</h1>
+  <div class="note">Click the <b>Model</b>, <b>Provenance</b>, or <b>Audit</b> pills to expand details. Hover a header for definitions.</div>
+  <input id="q" class="search" placeholder="Filter by run id, model, or meta…"/>
+  <table class="table">
+    <thead><tr id="head"></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+</div>
+<script src="web/common.js"></script>
+<script>
+const TIPS = {
+  run: "Unique run identifier",
+  model: "Model/system. Click ▸ to show metadata; label stays visible when expanded.",
+  accuracy: "Partial credit vs expected; exact/token/regex/edit",
+  grounding: "Citations must be allowed and appear in retrieved top-k; otherwise capped",
+  safety: "Regex packs for PII/Toxicity/Policy deductions",
+  robustness: "Stability under small prompt/input perturbations",
+  bias: "Penalty for biased outputs (rules + sampling proxy)",
+  calibration: "Reliability-of-confidence (ECE proxy)",
+  provenance: "Cryptographic proofs (Merkle root) and downloadable proof bundle",
+  audit: "Retrieval candidates (top-k) and citations present"
+};
+(async ()=>{
+  const data = await loadJSON('data/leaderboard.json');
+  const runs = data.runs||[];
+  const head = $('#head'), rows=$('#rows');
+
+  // Detect metric columns dynamically
+  const allowed = ['accuracy','grounding','safety','robustness','bias','calibration','trust'];
+  const present = allowed.filter(k => runs.some(r => typeof r[k]==='number'));
+
+  // Detect extras
+  const hasProv = runs.some(r => r.meta && r.meta.merkle_root);
+  const hasAudit = runs.some(r => 'audit_status' in r);
+
+  function th(key,label){
+    const el = document.createElement('th');
+    el.textContent = label + ' ⬍';
+    el.dataset.key = key;
+    el.setAttribute('data-tip', TIPS[key]||'');
+    el.classList.add('tooltip');
+    return el;
+  }
+
+  head.appendChild(th('run','Run'));
+  head.appendChild(th('model','Model'));
+  present.forEach(k=>head.appendChild(th(k, k[0].toUpperCase()+k.slice(1))));
+  if(hasProv) head.appendChild(th('provenance','Provenance'));
+  if(hasAudit) head.appendChild(th('audit','Audit'));
+  head.appendChild(th('report','Report'));
+
+  function pill(label, cls="", attr=""){
+    const span=document.createElement('span');
+    span.className = `pill ${cls}`;
+    if(attr) span.setAttribute(attr.split('=')[0], attr.split('=')[1]);
+    span.innerHTML = `<span>${label}</span><span class="chev">▸</span>`;
+    return span.outerHTML;
+  }
+
+  function row(r){
+    const meta=r.meta||{};
+    const tr=document.createElement('tr');
+    const tdRun=document.createElement('td'); tdRun.className='k'; tdRun.textContent=r.id; tr.appendChild(tdRun);
+
+    const tdModel=document.createElement('td');
+    tdModel.innerHTML = `<div class="row">${pill(r.model,"","data-meta='1'")}</div>
+      <div class="details hidden small">dataset: <span class='k'>${meta.dataset||'—'}</span> · retriever: <span class='k'>${meta.retriever||'—'}</span> · prompt: <span class='k'>${meta.prompt||'—'}</span> · date: <span class='k'>${meta.date||'—'}</span></div>`;
+    tr.appendChild(tdModel);
+
+    present.forEach(k=>{
+      const td=document.createElement('td'); td.dataset.sort = r[k]; td.textContent = fmt(r[k]); tr.appendChild(td);
+    });
+
+    if(hasProv){
+      const td=document.createElement('td');
+      td.innerHTML = `${pill(r.prov_status||'ok', r.prov_status||'ok', "data-prov='1'")}
+        <div class="details hidden small">Merkle root: <span class='k'>${meta.merkle_root||'—'}</span> · <a href="data/proofs/${r.id}.json" download>download proof</a></div>`;
+      tr.appendChild(td);
+    }
+
+    if(hasAudit){
+      const td=document.createElement('td');
+      td.innerHTML = `${pill(r.audit_status||'ok', r.audit_status||'ok', "data-audit='1'")}
+        <div class="details hidden small">Audit trail present (retrieval top-k + citations).</div>`;
+      tr.appendChild(td);
+    }
+
+    const tdRep=document.createElement('td'); tdRep.innerHTML = `<a href="data/reports/${r.id}.html">Report</a>`; tr.appendChild(tdRep);
+    return tr;
+  }
+
+  function render(list){
+    rows.innerHTML = '';
+    list.forEach(r => rows.appendChild(row(r)));
+    // Wire drawers
+    $all('[data-meta]').forEach(p=>p.addEventListener('click',()=>p.closest('td').querySelector('.details').classList.toggle('hidden')));
+    $all('[data-prov]').forEach(p=>p.addEventListener('click',()=>p.closest('td').querySelector('.details').classList.toggle('hidden')));
+    $all('[data-audit]').forEach(p=>p.addEventListener('click',()=>p.closest('td').querySelector('.details').classList.toggle('hidden')));
+    // Sorting by clicking metric headers (ignore Run/Model/Report)
+    $all('th').forEach((th,i)=>{
+      th.addEventListener('click',()=>{
+        const key = th.dataset.key;
+        if(['run','model','report','provenance','audit'].includes(key)) return;
+        sortTable(rows, i);
+      });
+    });
+  }
+
+  render(runs);
+
+  $('#q').addEventListener('input', e=>{
+    const s=e.target.value.toLowerCase();
+    render(runs.filter(r=>JSON.stringify(r).toLowerCase().includes(s)));
+  });
+})();
+</script>

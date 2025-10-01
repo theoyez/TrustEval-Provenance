@@ -1,0 +1,13 @@
+{
+  "weights": {
+    "accuracy": 0.45,
+    "grounding": 0.2,
+    "safety": 0.1,
+    "robustness": 0.1,
+    "bias": 0.075,
+    "calibration": 0.075
+  },
+  "ui": {
+    "theme": "dark-neutral"
+  }
+}

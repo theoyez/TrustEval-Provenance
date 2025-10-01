@@ -1,0 +1,8 @@
+{
+  "run_id": "2025-10-01_provenance10",
+  "merkle_root": "8b3f9bf6df354db952b0a4b400d80a7918a7b4fdf7927e812867b50fc6eecc3f",
+  "citations": [
+    "PAPER:vaswani2017",
+    "CARD:llama31"
+  ]
+}
