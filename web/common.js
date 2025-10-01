@@ -1,42 +1,51 @@
-const LB='./data/leaderboard.json';
-function $(q,root=document){return root.querySelector(q)} function $all(q,root=document){return [...root.querySelectorAll(q)]}
-function pct(x){return ((x||0)*100).toFixed(1)+'%'}
-function metaHTML(m){ if(!m) return '—'; return Object.entries(m).map(([k,v])=>`<code>${k}</code>: ${String(v)}`).join('<br>') }
-function auditHTML(d){ if(!d) return '—'; const r=(d.retrieved||[]).map(x=>`<li>${x}</li>`).join(''); const c=(d.cited||[]).map(x=>`<li>${x}</li>`).join(''); return `<strong>Retrieved</strong><ul>${r}</ul><strong>Cited</strong><ul>${c}</ul>` }
-function provHTML(r){ if(r.prov_root) return `Merkle root: <code>${r.prov_root}</code> · <a href="./data/proofs/${r.run_id}.json" download>download proof</a>`; return r.provenance||'—'; }
-async function load(){ const res=await fetch(LB,{cache:'no-store'}); const data=await res.json(); render(data.runs||[]) }
-function render(rows){
-  const tbody=$('tbody'); tbody.innerHTML='';
-  rows.forEach((r,idx)=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`
-      <td>${r.run_id}</td>
-      <td><button class="pill model" aria-expanded="false" data-for="row${idx}"><span>${r.model||'—'}</span><span class="chev">▸</span></button></td>
-      <td>${pct(r.accuracy)}</td>
-      <td>${pct(r.grounding)}</td>
-      <td>${pct(r.safety)}</td>
-      ${('robustness' in r)?`<td>${pct(r.robustness)}</td>`:''}
-      ${('bias' in r)?`<td>${pct(r.bias)}</td>`:''}
-      ${('calibration' in r)?`<td>${pct(r.calibration)}</td>`:''}
-      <td><strong>${pct(r.trust_score||r.trust||0)}</strong></td>
-      ${('prov_root' in r)?`<td><button class="pill prov" aria-expanded="false" data-for="row${idx}"><span>${r.provenance||'ok'}</span><span class="chev">▸</span></button></td>`:`<td>—</td>`}
-      <td><button class="pill audit" aria-expanded="false" data-for="row${idx}"><span>${r.audit||'ok'}</span><span class="chev">▸</span></button></td>
-      <td><a href="./data/reports/${encodeURIComponent(r.run_id)}.html">Report</a></td>`;
-    tbody.appendChild(tr);
-    const dr=document.createElement('tr'); dr.className='drawer-row'; dr.id=`row${idx}`;
-    dr.innerHTML=`<td colspan="${tr.children.length}"><div class="drawer">
-        <div class="card"><h4>Model meta</h4><div>${metaHTML(r.meta)}</div></div>
-        <div class="card"><h4>Audit trail</h4><div>${auditHTML(r.audit_details)}</div></div>
-        <div class="card"><h4>Provenance</h4><div>${provHTML(r)}</div></div>
-      </div></td>`;
-    tbody.appendChild(dr);
-  });
-  $all('.model,.audit,.prov').forEach(btn=>btn.addEventListener('click',()=>{
-    const id=btn.getAttribute('data-for'); const row=document.getElementById(id);
-    const exp=btn.getAttribute('aria-expanded')==='true'; btn.setAttribute('aria-expanded',(!exp).toString()); row.style.display=exp?'none':'table-row';
-  },{passive:true}));
-  const q=$('.search'); if(q && !q.dataset.hooked){ q.dataset.hooked=1; q.addEventListener('input',()=>{
-    const s=q.value.toLowerCase(); render(rows.filter(r=>JSON.stringify(r).toLowerCase().includes(s)));
-  });}
+// Small helpers shared by pages
+
+async function loadJSON(url){
+  const res = await fetch(url, {cache:'no-store'});
+  if (!res.ok) throw new Error(`fetch ${url}: ${res.status}`);
+  return await res.json();
 }
-document.addEventListener('DOMContentLoaded', load);
+
+function escapeHTML(s){
+  return String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+// Normalize a run object so rendering code can be simple
+function normalizeRun(r){
+  const out = {...r};
+  // summary metrics might be nested (summary.*) or top-level
+  const s = r.summary || r;
+  ['accuracy','grounding','safety','robustness','bias','calibration','trust']
+    .forEach(k => { if (typeof out[k] !== 'number' && typeof s[k] === 'number') out[k] = s[k]; });
+
+  // status fields
+  const a = r.audit || {};
+  const p = r.provenance || {};
+  out.audit_status = out.audit_status || a.status || r.auditStatus || 'ok';
+  out.provenance_status = out.provenance_status || p.status || r.provenanceStatus || 'ok';
+
+  // meta
+  out.meta = out.meta || r.meta || {};
+  // report link may be in data/reports/<id>.html or given directly
+  if (!out.report && r.run_id){
+    out.report = `data/reports/${r.run_id}.html`;
+  }
+  return out;
+}
+
+/* ---------- tooltips ---------- */
+const tipEl = document.getElementById('tip');
+function showTip(text, ev){
+  tipEl.textContent = text;
+  tipEl.hidden = false;
+  moveTip(ev);
+}
+function moveTip(ev){
+  if (tipEl.hidden) return;
+  const pad = 12;
+  const x = ev.clientX + pad;
+  const y = ev.clientY + pad;
+  tipEl.style.left = x+'px';
+  tipEl.style.top = y+'px';
+}
+function hideTip(){ tipEl.hidden = true; }
