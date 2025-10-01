@@ -1,0 +1,24 @@
+:root{--bg:#0f1115;--panel:#151821;--panel2:#0f131a;--text:#e6e7ea;--muted:#a9afbd;--brand:#8b7dff;--ok:#19c37d;--warn:#f5a524;--err:#ff6b6b;--bd:#232736;}
+*{box-sizing:border-box}html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font:14px/1.5 system-ui,Inter,Segoe UI,Roboto,Helvetica,Arial}
+a{color:var(--brand);text-decoration:none}a:hover{text-decoration:underline}
+.container{max-width:1200px;margin:28px auto;padding:0 16px}
+.toolbar{display:flex;gap:10px;justify-content:flex-end}
+.btn{background:var(--panel);border:1px solid var(--bd);color:var(--text);padding:8px 12px;border-radius:10px;cursor:pointer}
+.btn:hover{background:var(--panel2)}
+.help{margin:12px 0;padding:12px;background:var(--panel);border:1px solid var(--bd);border-radius:12px;color:var(--muted)}
+.search{width:100%;padding:10px 12px;border-radius:10px;background:var(--panel2);border:1px solid var(--bd);color:var(--text)}
+table{width:100%;border-collapse:separate;border-spacing:0;background:var(--panel);border:1px solid var(--bd);border-radius:14px;overflow:hidden;margin-top:12px}
+thead th{position:sticky;top:0;background:var(--panel);border-bottom:1px solid var(--bd);padding:12px 10px;color:var(--muted);text-align:left}
+tbody td{padding:12px 10px;border-bottom:1px solid var(--bd);vertical-align:middle}
+.tip{border-bottom:1px dotted var(--muted);cursor:help}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:var(--panel2);border:1px solid var(--bd);white-space:nowrap}
+.pill .chev{opacity:.85;transition:transform .15s} .pill[aria-expanded="true"] .chev{transform:rotate(90deg)}
+.drawer-row{display:none;background:var(--panel2)} .drawer{padding:14px 12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.card{background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:12px} .card h4{margin:0 0 8px 0;color:var(--muted);font-size:13px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+.kpi{background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:12px}
+.kpi .bar{height:6px;background:#1b1f2c;border-radius:999px;overflow:hidden;margin-top:8px}
+.kpi .bar span{display:block;height:100%;background:var(--brand);width:0}
+.toggle{display:flex;gap:8px;margin:12px 0}.toggle .btn.active{outline:2px solid var(--brand)}
+#radar{width:100%;max-width:540px;height:360px;background:var(--panel);border:1px solid var(--bd);border-radius:12px}
+@media (max-width:900px){.drawer{grid-template-columns:1fr}.kpis{grid-template-columns:1fr}}

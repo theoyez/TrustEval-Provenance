@@ -1,0 +1,14 @@
+{
+  "run_id": "2025-10-01_pro06",
+  "merkle_root": "df861c8ae1df41c29a08dcae265f3b75863017bdd9e14f72a1c3951016d14e9c",
+  "citations": [
+    {
+      "key": "PAPER:vaswani2017",
+      "hash": "ce6cd9180e274dd6985e07e085171462"
+    },
+    {
+      "key": "CARD:llama31",
+      "hash": "0b22adb7f241462e93336028bb7bc3f4"
+    }
+  ]
+}

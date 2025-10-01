@@ -1,0 +1,22 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Compare runs</title><link rel="stylesheet" href="./web/styles.css"></head><body><div class="container">
+<a class="btn" href="./index.html">← Leaderboard</a><h2>Compare runs</h2>
+<div style="display:flex;gap:8px;margin:10px 0">
+  <select id="left" class="btn"></select><select id="right" class="btn"></select><button id="open" class="btn">Open reports</button>
+</div>
+<table id="cmp"><thead><tr><th>Metric</th><th id="lHead">Left</th><th id="rHead">Right</th><th>Δ (right−left)</th></tr></thead><tbody></tbody></table>
+</div>
+<script>
+const PATH='./data/leaderboard.json'; const keys=['accuracy','grounding','safety','robustness','bias','calibration','trust_score'];
+function pct(x){return ((x||0)*100).toFixed(1)+'%';} let runs=[];
+async function init(){ const res=await fetch(PATH,{cache:'no-store'}); const json=await res.json(); runs=json.runs||[];
+  const L=document.getElementById('left'), R=document.getElementById('right'); const opts=runs.map(r=>`<option value="${r.run_id}">${r.run_id} — ${r.model||''}</option>`).join(''); L.innerHTML=opts; R.innerHTML=opts; L.selectedIndex=0; R.selectedIndex=Math.min(1,runs.length-1);
+  L.onchange=render; R.onchange=render; document.getElementById('open').onclick=()=>{ window.open(`./data/reports/${L.value}.html`,'_blank'); window.open(`./data/reports/${R.value}.html`,'_blank'); }; render(); }
+function render(){ const Lr=runs.find(x=>x.run_id===left.value); const Rr=runs.find(x=>x.run_id===right.value);
+  document.getElementById('lHead').textContent=Lr.run_id; document.getElementById('rHead').textContent=Rr.run_id;
+  const tb=document.querySelector('#cmp tbody'); tb.innerHTML=''; const order=['accuracy','grounding','safety','robustness','bias','calibration','trust_score'];
+  order.forEach(k=>{ if(!(k in Lr)&&!(k in Rr)) return; const lv=Lr[k]??0, rv=Rr[k]??0, d=rv-lv;
+    const tr=document.createElement('tr'); tr.innerHTML=`<td>${k.replace('_',' ')}</td><td>${pct(lv)}</td><td>${pct(rv)}</td><td style="color:${d>=0?'#19c37d':'#ff6b6b'}">${(d*100).toFixed(1)}%</td>`; tb.appendChild(tr); }); }
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body></html>
