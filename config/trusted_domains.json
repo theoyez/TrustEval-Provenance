@@ -1,0 +1,11 @@
+{
+  "trusted_domains": [
+    "arxiv.org",
+    "openreview.net",
+    "paperswithcode.com",
+    "huggingface.co",
+    "mlcommons.org",
+    "github.com",
+    "aclanthology.org"
+  ]
+}
