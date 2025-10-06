@@ -1,0 +1,8 @@
+
+/* patch-v47: audit chevrons and nowrap */
+.audit, .audit * { white-space: nowrap !important; }
+.audit { display: inline-flex; gap: 6px; align-items: center; flex-wrap: nowrap; }
+.badge.chev::after { content: "›"; margin-left: 4px; opacity: .8; }
+[title] { cursor: help; }
+#radarTop { border:1px solid #23303a; border-radius:12px; min-height:260px; margin:12px 0; padding:8px; display:flex; align-items:center; justify-content:center; }
+#radarTop svg text { font-size: 11px; fill: #b4c3d6; }
