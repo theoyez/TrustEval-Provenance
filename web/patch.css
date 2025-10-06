@@ -1,0 +1,14 @@
+
+/* patch v4.8 */
+.audit, .audit * { white-space: nowrap !important; }
+.audit { display: inline-flex; gap: 6px; align-items: center; flex-wrap: nowrap; }
+.badge.chev::after { content: "›"; margin-left: 4px; opacity: .8; }
+[title] { cursor: help; }
+#radarTop { border:1px solid #23303a; border-radius:12px; min-height:260px; margin:12px 0; padding:8px; display:flex; align-items:center; justify-content:center; }
+#radarTop svg text { font-size: 11px; fill: #b4c3d6; }
+
+/* v4.8c strengthen nowrap + chevrons */
+.audit, .audit *,
+td .badge, td .pill, td .chip { white-space: nowrap !important; }
+.audit, td .audit, td .badges { display: inline-flex !important; gap: 8px !important; align-items: center !important; flex-wrap: nowrap !important; }
+.badge.chev::after, .pill.chev::after, .chip.chev::after { content: "›"; margin-left: 4px; opacity: .8; }
