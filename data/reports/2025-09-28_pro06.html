@@ -1,0 +1,81 @@
+
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Run report</title>
+<style>body{background:#0a0c0d;color:#e7eaed;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif} .bubble{display:none!important}</style>
+<link rel="stylesheet" href="../../config/theme.css?v=20250928194153">
+</head><body><div class="container" style="padding:16px">
+<a class="btn" href="../../index.html">← Leaderboard</a> <a class="btn" href="javascript:window.print()">Export PDF</a>
+<h2 id="rid"></h2>
+<div class="grid3" id="cards"></div>
+<div class="card" style="margin-top:12px">
+  <div id="tog" class="chev">▸ Audit trail &amp; proofs</div>
+  <div id="bx" style="display:none;margin-top:8px">
+    <div class="grid3">
+      <div class="card"><div class="small">Retrieval candidates</div><ul id="retr" class="small"></ul></div>
+      <div class="card"><div class="small">Citations used</div><ul id="cites" class="small"></ul></div>
+      <div class="card"><div class="small">Proof path</div><div id="proof" class="small"></div></div>
+    </div>
+  </div>
+</div>
+</div>
+<script>
+(async function(){const id=location.pathname.split('/').pop().replace('.html','');const m=await fetch('../../leaderboard.json').then(r=>r.json());const row=(m.runs||[]).find(r=>r.run_id===id);if(!row){rid.textContent=id;cards.innerHTML='<div class=small>Not found.</div>';return;}rid.textContent=id;function card(lbl,val){return `<div class='card'><div class='small'>${lbl}</div><div class='val'>${(val*100).toFixed(1)}%</div><div class='bar'><div class='fill' style='width:${val*100}%'></div></div></div>`;}const labels={'accuracy':'Accuracy','grounding':'Grounding','safety':'Safety','robustness':'Robustness','bias':'Bias','calibration':'Calibration','trust_score':'Trust'};cards.innerHTML=Object.keys(labels).filter(k=>k in row).map(k=>card(labels[k],row[k])).join('');const trail=(row.audit&&row.audit.trail)||[];retr.innerHTML=trail.map(t=>`<li><code>${t.doc}</code> · chunk <b>${t.chunk}</b> · score ${t.score}</li>`).join('')||'<li>—</li>';const cite=(row.audit&&row.audit.citations)||[];cites.innerHTML=cite.map(c=>`<li><code>${c}</code></li>`).join('')||'<li>—</li>';const prov=row.provenance||{};let p=prov.root?`Merkle root <code>${prov.root}</code>`:'—';if(prov.bundle){p+=` · <a href='../../${prov.bundle}'>download bundle</a>`}proof.innerHTML=p;const t=document.getElementById('tog'),b=document.getElementById('bx');t.addEventListener('click',()=>{const o=b.style.display!=='block';b.style.display=o?'block':'none';t.textContent=o?'▾ Audit trail & proofs':'▸ Audit trail & proofs';});})();
+</script>
+<!-- v4.5 radar script -->
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  try{
+    var mount = document.getElementById('radarTop');
+    if(!mount) return;
+
+    function findValueNear(heading){
+      // Look for percentage in the closest ancestor card, else scan siblings
+      var card = heading.closest('.card') || heading.parentElement;
+      var txt = '';
+      if(card) txt = card.textContent || '';
+      if(!txt && heading.nextElementSibling) txt = heading.nextElementSibling.textContent || '';
+      var m = txt.match(/([0-9]+(?:\.[0-9]+)?)\s*%/);
+      if(!m) return NaN;
+      var v = parseFloat(m[1]); return isNaN(v) ? NaN : (v/100);
+    }
+
+    var labels = ["Accuracy","Grounding","Safety","Robustness","Bias","Calibration","Trust"];
+    var values = [];
+    labels.forEach(function(name){
+      var h = Array.from(document.querySelectorAll('h3, h4, .metric-label')).find(el => (el.textContent||'').trim().toLowerCase() === name.toLowerCase());
+      var val = h ? findValueNear(h) : NaN;
+      if(isNaN(val)) val = 0.6; // safe fallback
+      values.push(val);
+    });
+
+    // draw radar
+    var w=560,h=300,cx=w/2,cy=h/2+10,rad=95;
+    function pt(r,a){ return [cx + r*Math.cos(a), cy + r*Math.sin(a)]; }
+    var step = 2*Math.PI/labels.length;
+    var points=[];
+    for(var i=0;i<labels.length;i++){
+      var ang = -Math.PI/2 + i*step;
+      var rr = rad * Math.max(0, Math.min(1, values[i]));
+      var p = pt(rr, ang); points.push(p[0]+','+p[1]);
+    }
+    var grid=''; [0.33,0.66,1.0].forEach(function(k){
+      grid += '<circle cx="'+cx+'" cy="'+cy+'" r="'+(rad*k)+'" fill="none" stroke="#2a3440" stroke-width="1"/>';
+    });
+    var labelEls='';
+    for(var i=0;i<labels.length;i++){
+      var ang = -Math.PI/2 + i*step;
+      var lp = pt(rad+18, ang);
+      labelEls += '<text x="'+lp[0]+'" y="'+lp[1]+'" text-anchor="middle" font-size="11" fill="#b4c3d6">'+labels[i]+'</text>';
+    }
+    var svg = '<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'">'+
+      '<g>'+grid+'</g>'+
+      '<polygon points="'+points.join(' ')+'" fill="rgba(180,208,255,0.20)" stroke="#b4d0ff" stroke-width="2"/>'+
+      points.map(function(p){ var xy=p.split(','); return '<circle cx="'+xy[0]+'" cy="'+xy[1]+'" r="3" fill="#b4d0ff"/>'; }).join('')+
+      '<g>'+labelEls+'</g>'+
+    '</svg>';
+    mount.innerHTML = svg;
+  }catch(e){ console.error(e); }
+});
+</script>
+
+</body></html>
