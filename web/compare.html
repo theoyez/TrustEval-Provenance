@@ -1,0 +1,15 @@
+
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Compare runs</title>
+<style>body{background:#0a0c0d;color:#e7eaed;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif} .bubble{display:none!important}</style>
+<link rel="stylesheet" href="../config/theme.css?v=20250928194153">
+</head><body><div class="container" style="padding:16px">
+<a class="btn" href="../index.html">← Leaderboard</a><h2>Compare runs</h2>
+<p class="small">Pick two runs. Per-metric values and Δ (right − left). Use the button to open both reports.</p>
+<div class="chips"><label class="small">Left</label><select id="L" class="btn"></select><label class="small">Right</label><select id="R" class="btn"></select><a id="open" class="btn" href="javascript:void(0)">Open reports</a></div>
+<div id="chips" class="chips small"></div>
+<table id="t" style="display:none"><thead><tr><th>Metric</th><th id="lh"></th><th id="rh"></th><th>Δ (right−left)</th></tr></thead><tbody id="tb"></tbody></table>
+</div>
+<script>
+(async function(){const pct=x=>(x*100).toFixed(1)+'%';const board=await fetch('../leaderboard.json').then(r=>r.json());const runs=board.runs||[];const M=['accuracy','grounding','safety','robustness','bias','calibration','trust_score'].filter(k=>k in (runs[0]||{}));L.innerHTML=runs.map(r=>`<option value="${r.run_id}">${r.run_id} — ${r.model||'—'}</option>`).join('');R.innerHTML=L.innerHTML;if(runs.length>1)R.selectedIndex=1;function meta(prefix,m){const out=[];if(m?.model)out.push(`model: ${m.model}`);['dataset','prompt_cfg','retriever','date','sig','prov_root'].forEach(k=>{if(m?.[k])out.push(`${k}: ${m[k]}`)});return out.map(x=>`<span class="pill">${prefix} ${x}</span>`).join('');}function get(id){return runs.find(r=>r.run_id===id);}function render(){const a=get(L.value),b=get(R.value);if(!a||!b){t.style.display='none';return;}t.style.display='table';lh.textContent=a.run_id;rh.textContent=b.run_id;chips.innerHTML=meta('L',a.meta)+meta('R',b.meta);tb.innerHTML=M.filter(k=>k!=='trust_score').map(k=>{const d=(b[k]-a[k])*100;return `<tr><td>${k[0].toUpperCase()+k.slice(1)}</td><td>${pct(a[k])}</td><td>${pct(b[k])}</td><td class="${d>0?'delta-pos':d<0?'delta-neg':'delta-zero'}">${d.toFixed(1)}%</td></tr>`;}).join('');open.onclick=()=>{if(a.report)window.open('../'+a.report,'_blank');if(b.report)window.open('../'+b.report,'_blank');};}L.addEventListener('change',render);R.addEventListener('change',render);render();})();
+</script></body></html>
