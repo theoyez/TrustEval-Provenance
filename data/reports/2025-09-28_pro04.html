@@ -1,0 +1,30 @@
+
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Run report</title>
+<style>body{background:#0a0c0d;color:#e7eaed;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif} .bubble{display:none!important}</style>
+<link rel="stylesheet" href="../../config/theme.css?v=20250928194153">
+</head><body><div class="container" style="padding:16px">
+<a class="btn" href="../../index.html">← Leaderboard</a> <a class="btn" href="javascript:window.print()">Export PDF</a>
+<h2 id="rid"></h2>
+<div class="grid3" id="cards"></div>
+<div class="toggle" style="margin:12px 0;display:flex;gap:8px">
+  <button id="bars" title="Bar view">Bars</button>
+  <button id="radar" title="Radar view">Radar</button>
+</div>
+<div id="chart" class="chart" style="border:1px solid #23303a;border-radius:12px;min-height:220px;display:flex;align-items:center;justify-content:center">Bars view</div>
+<script>(function(){function P(cx,cy,r,a){return[cx+r*Math.cos(a),cy+r*Math.sin(a)]}function draw(el,vals){var w=280,h=220,cx=140,cy=110,rad=80;var axes=[-Math.PI/2,-Math.PI/2+2*Math.PI/3,-Math.PI/2+4*Math.PI/3];var pts=axes.map(function(a,i){var rr=rad*Math.max(0,Math.min(1,vals[i]||0));var p=P(cx,cy,rr,a);return p[0]+','+p[1]});var grid=[.33,.66,1].map(function(k){return '<circle cx="'+cx+'" cy="'+cy+'" r="'+(rad*k)+'" fill="none" stroke="#2a3440" stroke-width="1"/>'}).join('');el.innerHTML='<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'"><g fill="none" stroke="#2a3440">'+grid+'</g><polygon points="'+pts.join(' ')+'" fill="rgba(180,208,255,0.25)" stroke="#b4d0ff" stroke-width="2"/><g fill="#b4d0ff">'+pts.map(function(p){var xy=p.split(',');return '<circle cx="'+xy[0]+'" cy="'+xy[1]+'" r="3"/>'}).join('')+'</g></svg>'}var chart=document.getElementById('chart');function showBars(){chart.textContent='Bars view'}function showRadar(){chart.innerHTML='<div id="radarMount" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%"></div>';var accEl=document.querySelector('[data-acc]');var acc=accEl?parseFloat(accEl.getAttribute('data-acc')):0.7;draw(document.getElementById('radarMount'),[acc,0.8,0.65])}var b=document.getElementById('bars'),r=document.getElementById('radar');if(b&&r){b.addEventListener('click',showBars);r.addEventListener('click',showRadar);}showBars();})();</script>
+
+<div class="card" style="margin-top:12px">
+  <div id="tog" class="chev">▸ Audit trail &amp; proofs</div>
+  <div id="bx" style="display:none;margin-top:8px">
+    <div class="grid3">
+      <div class="card"><div class="small">Retrieval candidates</div><ul id="retr" class="small"></ul></div>
+      <div class="card"><div class="small">Citations used</div><ul id="cites" class="small"></ul></div>
+      <div class="card"><div class="small">Proof path</div><div id="proof" class="small"></div></div>
+    </div>
+  </div>
+</div>
+</div>
+<script>
+(async function(){const id=location.pathname.split('/').pop().replace('.html','');const m=await fetch('../../leaderboard.json').then(r=>r.json());const row=(m.runs||[]).find(r=>r.run_id===id);if(!row){rid.textContent=id;cards.innerHTML='<div class=small>Not found.</div>';return;}rid.textContent=id;function card(lbl,val){return `<div class='card'><div class='small'>${lbl}</div><div class='val'>${(val*100).toFixed(1)}%</div><div class='bar'><div class='fill' style='width:${val*100}%'></div></div></div>`;}const labels={'accuracy':'Accuracy','grounding':'Grounding','safety':'Safety','robustness':'Robustness','bias':'Bias','calibration':'Calibration','trust_score':'Trust'};cards.innerHTML=Object.keys(labels).filter(k=>k in row).map(k=>card(labels[k],row[k])).join('');const trail=(row.audit&&row.audit.trail)||[];retr.innerHTML=trail.map(t=>`<li><code>${t.doc}</code> · chunk <b>${t.chunk}</b> · score ${t.score}</li>`).join('')||'<li>—</li>';const cite=(row.audit&&row.audit.citations)||[];cites.innerHTML=cite.map(c=>`<li><code>${c}</code></li>`).join('')||'<li>—</li>';const prov=row.provenance||{};let p=prov.root?`Merkle root <code>${prov.root}</code>`:'—';if(prov.bundle){p+=` · <a href='../../${prov.bundle}'>download bundle</a>`}proof.innerHTML=p;const t=document.getElementById('tog'),b=document.getElementById('bx');t.addEventListener('click',()=>{const o=b.style.display!=='block';b.style.display=o?'block':'none';t.textContent=o?'▾ Audit trail & proofs':'▸ Audit trail & proofs';});})();
+</script></body></html>
